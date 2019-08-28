@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:bean xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http auto-config="true">
+			
+	 <intercept-url pattern="/addToCart/**" access="hasRole('ROLE_USER')" />
+		<form-login login-page="/login"
+		 username-parameter="email" password-parameter="password" 
+		 login-processing-url="/logg"
+		 authentication-success-forward-url="/logg"
+			authentication-failure-url="/login" />
+		<logout logout-url="/logOut" delete-cookies="true"
+		 logout-success-url="/" />
+		<csrf disabled="true" />
+	</http>
+	<!-- <authentication-manager> <authentication-provider> <user-service> <user 
+		name="admin" password="pass" authorities="ROLE_ADMIN" /> </user-service> 
+		</authentication-provider> </authentication-manager> -->
+	<authentication-manager>
+		<authentication-provider>
+			<jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="select email,password,enable from customer where email=?"
+				authorities-by-username-query="select username,role from author where username =?  " />
+		</authentication-provider>
+	</authentication-manager>
+</beans:bean>
